@@ -10,7 +10,7 @@ const CourseDetails = () => {
 
    const [courseData, setCoursedata] = useState(null)
 
-   const {allCourses, calculateRating} = useContext(AppContext)
+   const {allCourses, calculateRating, calculateChapterTime, calculateCourseDuration, calculateNoOfLectures} = useContext(AppContext)
 
    const fetchCourseData = async ()=>{
      const findCourse = allCourses.find(course => course._id === id)
@@ -35,7 +35,7 @@ const CourseDetails = () => {
          dangerouslySetInnerHTML={{__html: courseData.courseDescription.slice(0,200)}}></p>
 
      {/*reviews and ratings section*/}
-      <div className='flex items-center space-x-2'>
+      <div className='flex items-center space-x-2 pt-3 pb-1 text-sm'>
         <p>{calculateRating(courseData)}</p>
         <div className='flex'>
            {[...Array(5)].map((_, i)=>(<img key={i} src={i < Math.floor(calculateRating(courseData)) ? assets.star : assets.star_blank} alt='' className='w-3.5 h-3.5' />
@@ -44,6 +44,24 @@ const CourseDetails = () => {
          <p className='text-blue-600'>({courseData.courseRatings.length} {courseData.courseRatings.length > 1 ? 'ratings' : 'rating'})</p>
 
          <p>{courseData.enrolledStudents.length} {courseData.enrolledStudents.length > 1 ? 'students' : 'student'}</p>
+      </div>
+
+      <p className='text-sm'>Course by <span className='text-blue-600 underline'>KreativeCore</span></p>
+
+      <div className='pt-8 text-gray-800'>
+           <h2 className='text-xl font-semibold'>Course Structure</h2>
+           <div className='pt-5'>
+              {courseData.courseContent.map((chapter, index)=> (
+                <div key={index}>
+                  <div>
+                    <div>
+                      <img src={assets.down_arrow_icon} alt="arrow icon" />
+                      <p>{chapter.chapterTitle}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+           </div>
       </div>
 
       </div>
