@@ -21,7 +21,14 @@ const CourseDetails = () => {
 
   return (
     <div>
-      <h1>Course Details Page</h1>
+      
+
+      {/* left colomn */}
+      <div></div>
+
+      {/* right colomn */}
+      <div></div>
+      
     </div>
   )
 }
