@@ -25,7 +25,45 @@ const AddCourse = () => {
     }
   )
 
-  const 
+  const handleChapter = (action, chapterId ) => {
+    if(action === 'add'){
+      const title = prompt("Enter Chapter Name:");
+      if(title){
+        const newChapter = {
+          chapterId: uniqid(),
+          chapterTitle: title,
+          chapterContent: [],
+          collapsed: false,
+          chapterOrder: chapters.length > 0 ? chapters.slice(-1)[0].chapterOrder + 1 : 1,
+        };
+        setChapters([...chapters, newChapter]);
+      }
+    } else if (action === 'remove'){
+      setChapters(chapters.filter((chapter) => chapter.chapterId !== chapterId));
+    } else if (action === 'toggle'){
+      setChapters(
+        chapters.map((chapter) =>
+          chapter.chapterId === chapterId ? { ...chapter, collapsed: !chapter.collapsed} : chapter
+        )
+      );
+    }
+  };
+
+  const handleLecture = (action, chapterId, lectureindex) => {
+    if (action === 'add') {
+      setCurrentChapterId(chapterId);
+      setShowPopup(true);
+    } else if (action === 'remove') {
+      setChapters(
+        chapters.map((chapter) => {
+          if (chapter.chapterId === chapterId) {
+            chapter.chapterContent.splice(lectureindex, 1);
+          }
+          return chapter;
+        })
+      );
+    }
+  };
 
   useEffect(() => {
     // Initialize Quill only once
@@ -61,7 +99,7 @@ const AddCourse = () => {
             <label htmlFor="thumbnailImage" className='flex items-center gap-3'>
             <img src={assets.file_upload_icon} alt="" className='p-3 bg-blue-500 rounded'/>
             <input type="file" id='thumbnailImage' onChange={e => setImage(e.target.files[0])} accept="image/*" hidden/>
-            <img className='max-h-10' src={image ? URL.createObjectURL(image) : ''} alt="" />
+            <img className='max-h-10' src={image ? URL.createObjectURL(image) :''} alt="" />
             </label>
           </div>
         </div>
@@ -76,12 +114,14 @@ const AddCourse = () => {
             <div key={chapterIndex} className='bg-white border rounded-lg mb-4'>
               <div className='flex justify-between items-center p-4 border-b'>
                 <div className='flex-items-center'>
-                  <img src={assets.dropdown_icon} width={14} alt="" className={`mr-2 cursor-pointer transition-all
+                  <img onClick={() => handleChapter('toggle', chapter.chapterId)} 
+                   src={assets.dropdown_icon} width={14} alt="" className={`mr-2 cursor-pointer transition-all
                     ${chapter.collapsed && "-rotate-90"}`} />
                   <span className='font-semibold'>{chapterIndex + 1} {chapter.chapterTitle}</span>
                 </div>
                 <span className='text-gray-500'>{chapter.chapterContent.length} Lectures</span>
-                <img src={assets.cross_icon} alt="" className='cursor-pointer'/>
+                <img onClick={() => handleChapter('remove', chapter.chapterId)} 
+                src={assets.cross_icon} alt="" className='cursor-pointer'/>
               </div>
               {!chapter.collapsed && (
                 <div className='p-4'>
@@ -90,11 +130,12 @@ const AddCourse = () => {
                       <span>{lectureindex + 1} {lecture.lectureTitle} - {lecture.lectureDuration}
                         mins - <a href={lecture.lectureUrl} target='_blank' className='text-blue'>Link</a> -
                         {lecture.isPreviewFree ? 'Free Preview' : 'Paid'}
-                        <img src={assets.cross_icon} alt="" className='cursor-pointer'/>
-                      </span>
+                        </span>
+                        <img src={assets.cross_icon} alt="" onClick={()=> handleLecture('remove', chapter.chapterId, lectureindex)} className='cursor-pointer'/>
                     </div>
                   ))}
-                  <div className='inline-flex bg-gray-100 p-2 rounded cursor-pointer mt-2'>+ Add Lecture</div>
+                  <div className='inline-flex bg-gray-100/10 p-2 rounded cursor-pointer mt-2'
+                  onClick={()=> handleLecture('add', chapter.chapterId)}>+ Add Lecture</div>
                 </div>
               )}
             </div>
@@ -103,7 +144,7 @@ const AddCourse = () => {
           onClick={() => handleChapter('add')}>+ Add Chapter</div>
 
           {showPopup && (
-            <div className='fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50'>
+            <div className='fixed inset-0 flex items-center justify-center bg-gray-800/20 bg-opacity-50 rounded'>
               <div className='bg-white text-gray-700 p-4 rounded relative w-full max-w-80'>
                 <h2 className='text-lg font-semibold mb-4'>Add Lecture</h2>
 
