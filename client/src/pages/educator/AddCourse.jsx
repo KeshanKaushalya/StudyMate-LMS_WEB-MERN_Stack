@@ -65,6 +65,33 @@ const AddCourse = () => {
     }
   };
 
+   const addLecture = () => {
+    setChapters(
+      chapters.map((chapter) => {
+        if (chapter.chapterId === currentChapterId) {
+          const newLecture = {
+            ...lectureDetails,
+            lectureOrder: chapter.chapterContent.length > 0 ? chapter.chapterContent.slice(-1)[0].lectureOrder + 1 : 1,
+            lectureId: uniqid()
+          };
+          chapter.chapterContent.push(newLecture);
+        }
+        return chapter;
+      })
+    );
+    setShowPopup(false);
+    setLectureDetails({
+      lectureTitle: '',
+      lectureDuration: '',
+      lectureUrl: '',
+      isPreviewFree: false,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+  };
+
   useEffect(() => {
     // Initialize Quill only once
     if (!quillRef.current && editorRef.current) {
@@ -76,7 +103,7 @@ const AddCourse = () => {
 
   return (
     <div className='h-screen overflow-scroll flex flex-col items-start justify-between md:p-8 md:pb-0 p-4 pt-8 pb-0'>
-      <form className='flex flex-col gap-4 max-w-md w-full text-gray-500'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4 max-w-md w-full text-gray-500'>
         <div className='flex flex-col gap-1'>
           <p>Course Title</p>
           <input onChange={e => setCourseTitle(e.target.value)} value={courseTitle} type="text" 
@@ -188,7 +215,7 @@ const AddCourse = () => {
                   />
                 </div>
 
-                <button type='button' className='w-full bg-blue-400 text-white px-4 py-2 rounded'>Add</button>
+                <button type='button' className='w-full bg-blue-400 text-white px-4 py-2 rounded'onClick={addLecture}>Add</button>
 
                 <img onClick={() => setShowPopup(false)} src={assets.cross_icon} 
                 className='absolute top-4 right-4 w-4 cursor-pointer' alt="" />
