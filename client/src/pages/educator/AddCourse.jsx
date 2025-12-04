@@ -155,7 +155,7 @@ const AddCourse = () => {
                   {chapter.chapterContent.map((lecture, lectureindex)=> (
                     <div key={lectureindex} className='flex justify-between items-center mb-2'>
                       <span>{lectureindex + 1} {lecture.lectureTitle} - {lecture.lectureDuration}
-                        mins - <a href={lecture.lectureUrl} target='_blank' className='text-blue'>Link</a> -
+                        mins - <a href={lecture.lectureUrl} target='_blank' className='text-blue-500'>Link</a> -
                         {lecture.isPreviewFree ? 'Free Preview' : 'Paid'}
                         </span>
                         <img src={assets.cross_icon} alt="" onClick={()=> handleLecture('remove', chapter.chapterId, lectureindex)} className='cursor-pointer'/>
